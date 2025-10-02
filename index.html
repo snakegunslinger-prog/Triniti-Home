@@ -57,6 +57,13 @@
     </div>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 md:py-28">
       <div class="max-w-2xl">
+        <div class="mb-6 flex items-center gap-4">
+          <img src="https://unavatar.io/instagram/cest.la.vie.triniti" alt="Triniti Johnson profile" class="h-16 w-16 md:h-20 md:w-20 rounded-full ring-2 ring-pink-300/60 object-cover" loading="eager" />
+          <div class="text-sm text-pink-100/90">
+            <div class="font-semibold">@cest.la.vie.triniti</div>
+            <div>Las Vegas • Creator & Mom of 4</div>
+          </div>
+        </div>
         <h1 class="text-5xl md:text-7xl font-extrabold leading-tight break-words">Glow Up with <span class="brand-text">Triniti</span>.</h1>
         <p class="mt-5 text-base md:text-lg text-pink-100">Hey, I’m Triniti — a Las Vegas based creator and mom of four. I make family‑first content, design practical 3D‑printed products, and share my love for reef & saltwater tanks.</p>
         <div class="mt-7 flex flex-wrap gap-3">
@@ -105,12 +112,43 @@
       <h2 class="text-3xl md:text-4xl font-extrabold text-pink-200">We R 3D — Cute & Practical</h2>
       <a href="https://www.ebay.com/str/wer3d/Pet-Supplies/" target="_blank" rel="noopener" class="text-sm text-pink-300 hover:text-white">Open eBay category →</a>
     </div>
-    <p class="mt-2 text-sm text-pink-100/80">Live feed from our eBay Pet Supplies category. Images and listings auto‑update whenever you change your eBay listings.</p>
-    <div class="mt-6">
-      <iframe src="https://www.ebay.com/str/wer3d/Pet-Supplies/" class="w-full h-[720px] rounded-2xl border border-pink-400/20 bg-white/5" loading="lazy"></iframe>
+    <p class="mt-2 text-sm text-pink-100/80">Some browsers block eBay inside iframes for security. If the feed below looks blank, use the button to open the store in a new tab.</p>
+
+    <div class="mt-6 relative">
+      <div class="absolute inset-0 pointer-events-none rounded-2xl border border-pink-400/20" aria-hidden="true"></div>
+      <iframe id="ebayFrame" src="https://www.ebay.com/str/wer3d/Pet-Supplies/" class="w-full h-[720px] rounded-2xl bg-white/5" loading="lazy"></iframe>
+      <div id="ebayFallback" class="hidden absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-2xl bg-[#1f1d29] text-center p-6">
+        <p class="text-pink-100/90 max-w-md">Your browser is blocking eBay embeds. Tap below to view the live, auto‑updating listings directly on eBay.</p>
+        <a href="https://www.ebay.com/str/wer3d/Pet-Supplies/" target="_blank" rel="noopener" class="inline-flex items-center rounded-xl bg-pink-400 px-5 py-3 text-sm font-semibold text-black hover:bg-pink-300">Open We R 3D on eBay</a>
+      </div>
     </div>
+
+    <noscript>
+      <div class="mt-4">
+        <a href="https://www.ebay.com/str/wer3d/Pet-Supplies/" target="_blank" rel="noopener" class="inline-flex items-center rounded-xl bg-pink-400 px-5 py-3 text-sm font-semibold text-black">Open We R 3D on eBay</a>
+      </div>
+    </noscript>
   </div>
 </section>
+<script>
+// Detect eBay iframe block and show fallback
+(function(){
+  const f = document.getElementById('ebayFrame');
+  const fb = document.getElementById('ebayFallback');
+  // If the iframe hasn't painted within 2.2s, assume it's blocked
+  setTimeout(()=>{
+    try {
+      // Accessing contentDocument will throw if cross‑origin AND loaded; if blocked, nothing will paint
+      const painted = f && f.contentWindow && f.contentDocument && f.contentDocument.readyState !== 'uninitialized';
+      if (!painted) fb.classList.remove('hidden');
+    } catch(e){
+      // Cross‑origin access throws once loaded; keep iframe visible but provide a manual fallback toggle
+      // If height is 0 or clientHeight is tiny, show fallback
+      if (f && f.clientHeight < 100) fb.classList.remove('hidden');
+    }
+  }, 2200);
+})();
+</script>
 
 <!-- Reef & Saltwater Tanks (Instagram embeds from @saltytanklife) -->
 <section id="reef" class="py-16 md:py-24">
