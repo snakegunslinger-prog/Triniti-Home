@@ -52,7 +52,10 @@
   <section id="top" class="relative overflow-hidden">
     <div class="absolute inset-0 -z-10">
       <!-- Uses .jpeg per your live site setup -->
-      <img src="/assets/hero-cover.jpeg" alt="Triniti lifestyle cover" class="h-full w-full object-cover opacity-30" />
+      <picture>
+        <source srcset="/assets/hero-cover.webp?v=1" type="image/webp" />
+        <img id="heroImg" src="/assets/hero-cover.jpeg?v=1" alt="Triniti lifestyle cover" class="h-full w-full object-cover opacity-30" />
+      </picture>
       <div class="absolute inset-0 girly-bg opacity-40 mix-blend-overlay"></div>
     </div>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 md:py-28">
@@ -237,6 +240,33 @@
     </div>
   </footer>
 
-  <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+<script>
+  // Hero image robust fallback: tries .jpeg → .jpg → root path
+  (function(){
+    const img = document.getElementById('heroImg');
+    if(!img) return;
+    function tryNextFallback(){
+      const triedJpeg = img.src.includes('hero-cover.jpeg');
+      const triedJpg = img.src.includes('hero-cover.jpg');
+      if(triedJpeg){
+        img.onerror = tryNextFallback;
+        img.src = '/assets/hero-cover.jpg?v=1';
+      } else if(triedJpg){
+        img.onerror = null;
+        img.src = '/hero-cover.jpg?v=1'; // in case file is at public root
+      }
+    }
+    img.addEventListener('error', tryNextFallback);
+    // If the image silently fails (no error event), force-check after load
+    window.addEventListener('load', function(){
+      setTimeout(function(){
+        if(img.naturalWidth === 0){
+          tryNextFallback();
+        }
+      }, 500);
+    });
+  })();
+  document.getElementById('y').textContent=new Date().getFullYear();
+</script>
 </body>
 </html>
