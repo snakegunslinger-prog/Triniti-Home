@@ -19,6 +19,28 @@
     .brand-text{background-image:linear-gradient(135deg,#f472b6 0%,#ec4899 50%,#d946ef 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
     .girly-bg{background-image:linear-gradient(to right,#fce7f3,#fbcfe8,#f9a8d4)}
     .girly-card{background-color:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15)}
+
+    /* Parallax hero background with layered fallbacks */
+    #top{position:relative;}
+    #top::before{content:"";position:absolute;inset:0;z-index:-2;
+      background-image:url('/assets/hero-cover.webp'),url('/assets/hero-cover.jpg'),url('/assets/hero-cover.jpeg');
+      background-size:cover;background-position:center;background-repeat:no-repeat;
+      background-attachment:fixed; /* Parallax */
+      filter:opacity(0.30);
+    }
+    #top::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.4;mix-blend:overlay;background-image:linear-gradient(to right,#fce7f3,#fbcfe8,#f9a8d4)}
+
+    /* iOS & small-device fallback: disable fixed to avoid jitter */
+    @supports (-webkit-overflow-scrolling: touch){
+      #top::before{background-attachment:scroll}
+    }
+    @media (max-width: 768px){
+      #top::before{background-attachment:scroll}
+    }
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      #top::before{background-attachment:scroll}
+    }
   </style>
 </head>
 <body class="bg-[#1f1d29] text-pink-50">
@@ -48,16 +70,8 @@
     </div>
   </header>
 
-  <!-- Hero (no avatar, centered intro + buttons) -->
+  <!-- Hero (parallax background) -->
   <section id="top" class="relative overflow-hidden">
-    <div class="absolute inset-0 -z-10">
-      <!-- Uses .jpeg per your live site setup -->
-      <picture>
-        <source srcset="/assets/hero-cover.webp?v=1" type="image/webp" />
-        <img id="heroImg" src="/assets/hero-cover.jpeg?v=1" alt="Triniti lifestyle cover" class="h-full w-full object-cover opacity-30" />
-      </picture>
-      <div class="absolute inset-0 girly-bg opacity-40 mix-blend-overlay"></div>
-    </div>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 md:py-28">
       <div class="max-w-2xl text-center mx-auto">
         <div class="mb-6 text-pink-100/90 text-lg md:text-xl font-semibold">
@@ -166,20 +180,20 @@
   <section id="services" class="py-16 md:py-24 border-t border-white/10 bg-pink-900/10">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <h2 class="text-3xl md:text-4xl font-extrabold text-pink-200">Brand Collaborations</h2>
-      <p class="mt-3 text-pink-100/90 max-w-2xl">Let’s create content that actually converts. I partner with family, home, aquarium, and lifestyle brands for UGC, reels, photos, and how-tos.</p>
+      <p class="mt-3 text-pink-100/90 max-w-2xl">Let’s create content that actually converts. I partner with family, home, aquarium, and lifestyle brands for UGC, reels, photos, and how‑tos.</p>
 
       <div class="mt-8 grid gap-6 md:grid-cols-3">
         <div class="girly-card rounded-2xl p-6">
           <h3 class="font-semibold text-pink-200">UGC Packages</h3>
-          <p class="mt-2 text-sm text-pink-100/80">Short-form reels, product demos, and family-focused use cases.</p>
+          <p class="mt-2 text-sm text-pink-100/80">Short‑form reels, product demos, and family‑focused use cases.</p>
         </div>
         <div class="girly-card rounded-2xl p-6">
           <h3 class="font-semibold text-pink-200">Aquarium Features</h3>
-          <p class="mt-2 text-sm text-pink-100/80">Tank showcases, maintenance tutorials, and long-term gear reviews.</p>
+          <p class="mt-2 text-sm text-pink-100/80">Tank showcases, maintenance tutorials, and long‑term gear reviews.</p>
         </div>
         <div class="girly-card rounded-2xl p-6">
           <h3 class="font-semibold text-pink-200">Custom 3D Prints</h3>
-          <p class="mt-2 text-sm text-pink-100/80">White-label designs or bespoke parts for your customers’ setups.</p>
+          <p class="mt-2 text-sm text-pink-100/80">White‑label designs or bespoke parts for your customers’ setups.</p>
         </div>
       </div>
     </div>
@@ -264,33 +278,8 @@
     </div>
   </footer>
 
-<script>
-  // Hero image robust fallback: tries .jpeg → .jpg → root path
-  (function(){
-    const img = document.getElementById('heroImg');
-    if(!img) return;
-    function tryNextFallback(){
-      const triedJpeg = img.src.includes('hero-cover.jpeg');
-      const triedJpg = img.src.includes('hero-cover.jpg');
-      if(triedJpeg){
-        img.onerror = tryNextFallback;
-        img.src = '/assets/hero-cover.jpg?v=1';
-      } else if(triedJpg){
-        img.onerror = null;
-        img.src = '/hero-cover.jpg?v=1'; // in case file is at public root
-      }
-    }
-    img.addEventListener('error', tryNextFallback);
-    // If the image silently fails (no error event), force-check after load
-    window.addEventListener('load', function(){
-      setTimeout(function(){
-        if(img.naturalWidth === 0){
-          tryNextFallback();
-        }
-      }, 500);
-    });
-  })();
-  document.getElementById('y').textContent=new Date().getFullYear();
-</script>
+  <script>
+    document.getElementById('y').textContent=new Date().getFullYear();
+  </script>
 </body>
 </html>
